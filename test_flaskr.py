@@ -109,6 +109,24 @@ class BookTestcase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Method not allowed')
 
+    def test_get_book_search_with_results(self):
+        res = self.client().post('/books', json={'search': 'Book1'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['total_books'])
+        self.assertEqual(len(data['books']), 3)
+
+    def test_get_book_search_without_results(self):
+        res = self.client().post('/books', json={'search': 'Book100'})
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertEqual(data['total_books'], 0)
+        self.assertEqual(len(data['books']), 0)
+
 
 # Make the tests conveniently executable
 if __name__ == '__main__':
